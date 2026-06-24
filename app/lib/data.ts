@@ -62,6 +62,13 @@ export async function fetchCardData() {
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`;
 
+    // *Parallel data fetching, 병렬 데이터 가져오기
+    // Promise.all(), Promise.allSettled() 함수를 사용하여 모든 Promise를 동시에 실행
+    // ** 장점
+    // 1. 모든 데이터 가져오기 작업을 동시에 수행 - 각 요청이 순차적으로 완료될 때까지 기다리는 방식보다 훨씬 빠름
+    // 2. 어떤 라이브러리나 프레임워크에서 적용 가능한 Native JavaScript 패턴
+    // ** 단점
+    // 1. 특정 데이터 요청이 다른 요청보다 처리 속도가 느릴 때 문제 발생
     const data = await Promise.all([
       invoiceCountPromise,
       customerCountPromise,
