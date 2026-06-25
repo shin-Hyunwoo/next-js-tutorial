@@ -92,6 +92,7 @@ export async function fetchCardData() {
   }
 }
 
+// 테이블의 페이지당 6개의 데이터만 표시하도록 함
 const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
