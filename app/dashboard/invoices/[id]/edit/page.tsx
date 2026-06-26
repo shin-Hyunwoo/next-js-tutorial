@@ -1,0 +1,30 @@
+// invoices > *[id] > edit > page.tsx : 정확한 루트 이름을 알 수 없지만 데이터 기반으로 루트를 생성할 때 사용하는 'Dynamic Route Segments, 동적 루트 세그먼트'
+import Form from '@/app/ui/invoices/edit-form';
+import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+
+  const [invoice, customers] = await Promise.all([
+    fetchInvoiceById(id),
+    fetchCustomers(),
+  ]);
+
+  return (
+    <main>
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: 'Invoices', href: '/dashboard/invoices' },
+          {
+            label: 'Edit Invoice',
+            href: `/dashboard/invoices/${id}/edit`,
+            active: true,
+          },
+        ]}
+      />
+      <Form invoice={invoice} customers={customers} />
+    </main>
+  );
+}
