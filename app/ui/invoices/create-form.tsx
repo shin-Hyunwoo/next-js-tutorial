@@ -1,3 +1,8 @@
+'use client';
+
+import { createInvoice, State } from '@/app/lib/actions';
+import { useActionState } from 'react';
+
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
@@ -7,11 +12,13 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createInvoice } from '@/app/lib/actions';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
+  const initialState: State = { message: null, errors: {} };
+  const [state, formAction] = useActionState(createInvoice, initialState);
+
   return (
-    <form action={createInvoice}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -24,17 +31,29 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
+              // aria-describedby="customer-error" : id="customer-error" 가 포함된 컨테이너가 select 요소에 대한 정보를 설명한다는 의미
+              aria-describedby="customer-error"
             >
               <option value="" disabled>
                 Select a customer
               </option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.name}
+              {customers.map((name) => (
+                <option key={name.id} value={name.id}>
+                  {name.name}
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          </div>
+          {/* id="customer-error" : 이 id 속성은 select 입력란에 표시되는 오류 메시지를 담고 있는 HTML 요소를 고유하게 식별합니다. aria-describedby 이 해당 관계를 파악하기 위해서는 이 정보가 필요 */}
+          {/* aria-live="polite" : 스크린 리더는 div 내의 오류가 수정될 때 사용자에게 정중하게 알려줘야 함, 콘텐츠가 변경될 ㄷ경우 스크린 리더는 해당 변경 사항을 알려주나, 사용자가 다른 작업을 하고 있지 않은 경우만 해당 */}
+          <div id="customer-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.customerId &&
+              state.errors.customerId.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
         </div>
 
@@ -52,6 +71,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                 step="0.01"
                 placeholder="Enter USD amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                // Clietn-Side validation : 클라이언트 측 검증, required 속성을 추가하여 브라우저가 제공하는 form 검증 기능 활용
+                // required
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>

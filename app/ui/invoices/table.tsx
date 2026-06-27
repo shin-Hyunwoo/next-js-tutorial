@@ -31,6 +31,7 @@ export default async function InvoicesTable({
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
+                        // Image의 alt 속성을 제거 시 eslint가 경고 메시지를 띄어줌, eslint를 추가하고 설정하는 것은 필수적인 단계는 아니나, 개발 과정에서 접근성 문제를 미리 발견하는 데 도움이 됨
                         alt={`${invoice.name}'s profile picture`}
                       />
                       <p>{invoice.name}</p>
