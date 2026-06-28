@@ -4,6 +4,11 @@ import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
 // * 루트의 error.tsx보다 notFound가 우선됨. 구체적인 오류를 처리해야할 때는 notFound를 사용
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Edit Invoice',
+};
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
